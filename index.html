@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Push Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+
+<h2>Web Push Demo</h2>
+<button id="btn">Показати push</button>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+
+document.getElementById('btn').onclick = async () => {
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') return;
+
+  const reg = await navigator.serviceWorker.ready;
+  reg.showNotification("💰 Playful Rewards", {
+    body: "You received $28 USD - for playing games",
+    icon: "icon.png"
+  });
+};
+</script>
+
+</body>
+</html>
