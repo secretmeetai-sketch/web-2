@@ -5,27 +5,68 @@
   <title>Web Push Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f2f2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      text-align: center;
+    }
+    button {
+      margin-top: 14px;
+      font-size: 16px;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 12px;
+      background: #007aff;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Web Push Demo</h2>
-<button id="btn">Показати push</button>
+<div class="box">
+  <h2>Web Push Demo</h2>
+  <p>PayPal • старт через 5 сек • 10 push</p>
+  <button onclick="startPushes()">Запустити push</button>
+</div>
 
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
 
-document.getElementById('btn').onclick = async () => {
+async function startPushes() {
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') return;
 
   const reg = await navigator.serviceWorker.ready;
-  reg.showNotification("💰 Playful Rewards", {
-    body: "You received $28 USD - for playing games",
-    icon: "icon.png"
-  });
-};
+
+  const amounts = [
+    "£25", "£40", "£75", "£40", "£125",
+    "£30", "£35", "£40", "£45", "£50"
+  ];
+
+  // ⏳ старт через 5 секунд
+  setTimeout(() => {
+    amounts.forEach((amount, index) => {
+      setTimeout(() => {
+        reg.showNotification("FreeCash", {
+          body: `You received a new payment ${amount} from FreeCash`,
+          icon: "icon.png"
+        });
+      }, index * 1000); // 1 сек між push
+    });
+  }, 5000);
+}
 </script>
 
 </body>
